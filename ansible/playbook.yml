@@ -1,0 +1,47 @@
+---
+- hosts: all
+  user: root
+  sudo: yes
+  vars:
+    mysql_kea_password: 
+
+  tasks:
+      - name: register kea-1.6 repo
+        shell: curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-1-6/cfg/setup/bash.deb.sh' | sudo bash 
+
+      - name: apt update
+        apt:
+          update_cache: yes
+
+      - name: install kea
+        apt:
+          name:
+            - isc-kea-dhcp4-server
+            - isc-kea-admin
+
+      - name: install mariadb
+        apt:
+          name: 
+            - mariadb-server
+            - python-mysqldb
+
+      - name: mariadb service start
+        service: name=mariadb state=started enabled=yes
+
+      - name: db create
+        mysql_db:
+          name: kea
+          state: present
+      
+      - name: db_user create
+        mysql_user:
+          name: kea
+          password: "{{ mysql_kea_password }}"
+          priv: '*.*:ALL,GRANT'
+          state: present
+
+      - name: replace kea-dhcp4.conf
+        copy: src=kea-dhcp4.conf dest=/etc/kea/kea-dhcp4.conf
+
+      - name: kea start
+        service: name=isc-kea-dhcp4-server state=started enabled=yes
