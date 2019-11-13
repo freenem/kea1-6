@@ -28,6 +28,9 @@
       - name: mariadb service start
         service: name=mariadb state=started enabled=yes
 
+      - name: replace my.cnf
+        copy: src=my.cnf dest=/etc/mysql/my.cnf
+
       - name: db create
         mysql_db:
           name: kea
@@ -39,6 +42,10 @@
           password: "{{ mysql_kea_password }}"
           priv: '*.*:ALL,GRANT'
           state: present
+
+
+      - name: kea-db init
+        shell: kea-admin db-init mysql -u kea -p "{{ mysql_kea_password }}" -n kea
 
       - name: replace kea-dhcp4.conf
         copy: src=kea-dhcp4.conf dest=/etc/kea/kea-dhcp4.conf
