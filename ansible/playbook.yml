@@ -25,11 +25,11 @@
             - mariadb-server
             - python-mysqldb
 
-      - name: mariadb service start
-        service: name=mariadb state=started enabled=yes
-
       - name: replace my.cnf
         copy: src=my.cnf dest=/etc/mysql/my.cnf
+
+      - name: mariadb service start
+        service: name=mariadb state=started enabled=yes
 
       - name: db create
         mysql_db:
