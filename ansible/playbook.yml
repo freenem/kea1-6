@@ -28,8 +28,8 @@
       - name: replace my.cnf
         copy: src=my.cnf dest=/etc/mysql/my.cnf
 
-      - name: mariadb service start
-        service: name=mariadb state=started enabled=yes
+      - name: mariadb service restart becose my.cnf is reflected
+        service: name=mariadb state=restarted enabled=yes
 
       - name: db create
         mysql_db:
