@@ -1,0 +1,15 @@
+version: '3'
+services:
+  kea1-6:
+    build: ./kea1-6
+    depends_on:
+      - kea_db
+    network_mode: "host"
+    restart: always
+  kea_db:
+    build: ./kea_db
+    env_file:
+      - ./kea_db/db.env
+    ports:
+      - "3306:3306"
+    restart: always
